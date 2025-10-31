@@ -1,4 +1,7 @@
-package com.pluralsight;
+package com.pluralsight.FileManagers;
+
+import com.pluralsight.Dealership;
+import com.pluralsight.Vehicle;
 
 import java.io.*;
 
