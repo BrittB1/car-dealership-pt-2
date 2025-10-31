@@ -50,6 +50,7 @@ public class UserInterface {
                      ║  7. 📋 SHOW ALL VEHICLES           ║
                      ║  8. 💸 Add a Vehicle               ║
                      ║  9. 📈 Remove a Vehicle            ║
+                     ║ 10. 🤝 Sell/Lease a Vehicle        ║
                      ║  0. 🚪 EXIT                        ║
                      ╚════════════════════════════════════╝
                     \s""");
@@ -90,6 +91,9 @@ public class UserInterface {
                 case 9:
                     processRemoveVehicle();
                     break;
+                case 10:
+                    processSellLeaseVehicle();
+                    break;
                 case 0:
                     running = false;
                     break;
@@ -98,6 +102,11 @@ public class UserInterface {
 
             }
         }
+    }
+
+    private void processSellLeaseVehicle() {
+
+
     }
 
     private void processAddVehicle() {
