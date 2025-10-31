@@ -3,15 +3,17 @@ package com.pluralsight.data;
 import com.pluralsight.Vehicle;
 
 public class SalesContract extends Contract {
-    double salesTax, recordingFee, processingFee;
-    boolean isFinanced;
+    private double salesTax, recordingFee, processingFee;
+    private boolean isFinanced;
 
-    public SalesContract(Vehicle vehicleSold, String contractDate, String customerName, String customerEmail) {
+    public SalesContract(Vehicle vehicleSold, String contractDate, String customerName, String customerEmail,
+                         double salesTax, double recordingFee, double processingFee, boolean isFinanced) {
         super(vehicleSold, contractDate, customerName, customerEmail);
 
         this.salesTax = salesTax;
         this.recordingFee = recordingFee;
         this.processingFee = processingFee;
+        this.isFinanced = isFinanced;
     }
 
     public double getSalesTax() {
