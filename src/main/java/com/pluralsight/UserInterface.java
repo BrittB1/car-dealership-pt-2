@@ -1,6 +1,9 @@
 package com.pluralsight;
 
+import com.pluralsight.FileManagers.ContractFileManager;
 import com.pluralsight.FileManagers.DealershipFileManager;
+import com.pluralsight.data.LeaseContract;
+import com.pluralsight.data.SalesContract;
 
 import java.util.List;
 import java.util.Scanner;
@@ -105,8 +108,94 @@ public class UserInterface {
     }
 
     private void processSellLeaseVehicle() {
+        System.out.println("==== Sell/Lease A Vehicle ====");
+        System.out.println("Enter the VIN of the vehicle: ");
+        int vin = keyboard.nextInt();
+        keyboard.nextLine();
 
+        Vehicle vehicleSelected = null;
 
+        for (Vehicle vehicle: dealership.getAllVehicles()){
+            if (vehicle.getVin() == vin) {
+                vehicleSelected = vehicle;
+                break;
+            }
+        }
+if (vehicleSelected == null){
+    System.out.println("❌ Vehicle with VIN " + vin + " not found!");
+}
+        System.out.println("Enter customer name: ");
+String customerName = keyboard.nextLine();
+
+        System.out.println("Enter customer e-mail: ");
+        String customerEmail = keyboard.nextLine();
+
+        System.out.println("Enter date of contract (YYYY-MM-DD): ");
+        String contractDate = keyboard.nextLine();
+
+        System.out.println("=== Is this a SALE or LEASE? ===");
+        System.out.println("1.) SALE");
+        System.out.println("2.) LEASE");
+        System.out.println("Enter choice: ");
+        int contractType = keyboard.nextInt();
+        keyboard.nextLine();
+
+        if (contractType == 1) {
+            double vehiclePrice = vehicleSelected.getPrice();
+            double salesTax = vehiclePrice * 0.05;
+            double recordingFee = 100.00;
+            double processingFee = vehiclePrice < 10000 ? 295.00 : 495.00;
+
+            System.out.println("Do you want to finance? (YES/NO): ");
+            String financeChoice = keyboard.nextLine();
+            boolean isFinanced = financeChoice.equalsIgnoreCase("YES");
+
+            SalesContract salesContract = new SalesContract(vehicleSelected, contractDate, customerName,
+                    customerEmail, salesTax, recordingFee, processingFee, isFinanced);
+
+            ContractFileManager contractManager = new ContractFileManager();
+            contractManager.saveContract(salesContract);
+
+            dealership.removeVehicle(vehicleSelected);
+
+            DealershipFileManager dealershipManager = new DealershipFileManager();
+            dealershipManager.saveDealership(dealership);
+
+            System.out.println("✅ Sales contract created successfully");
+            System.out.printf("Total Price: $%.2f%n", salesContract.getTotalPrice());
+            System.out.printf("Monthly Payment: $%.2f%n", salesContract.getMonthlyPayment());
+
+        } else if (contractType == 2) {
+
+            int currentYear = 2025;
+            int vehicleAge = currentYear - vehicleSelected.getYear();
+
+            if (vehicleAge > 3){
+                System.out.println("❌ Cannot lease a vehicle over 3 years old.");
+                return;
+            }
+            double vehiclePrice = vehicleSelected.getPrice();
+            double expectedEndingValue = vehiclePrice * 0.50;
+            double leaseFee = vehiclePrice * 0.07;
+
+            LeaseContract leaseContract = new LeaseContract(vehicleSelected,contractDate,customerName
+                    ,customerEmail,expectedEndingValue,leaseFee);
+
+            ContractFileManager contractManager = new ContractFileManager();
+            contractManager.saveContract(leaseContract);
+
+            dealership.removeVehicle(vehicleSelected);
+
+            DealershipFileManager dealershipManager = new DealershipFileManager();
+            dealershipManager.saveDealership(dealership);
+
+            System.out.println("✅ Lease contract created successfully");
+            System.out.printf("Total Price: $%.2f%n", leaseContract.getTotalPrice());
+            System.out.printf("Monthly Payment: $%.2f (36 months) %n", leaseContract.getMonthlyPayment());
+
+        } else {
+            System.out.println("❌ Invalid choice. Please try again");
+        }
     }
 
     private void processAddVehicle() {
